@@ -20,12 +20,13 @@ import { environment } from '../environments/environment';
 })
 export class AppModule { }
 
-export function initKeycloak(kc: KeycloakService) {
+export function initKeycloak(keycloak: KeycloakService) {
   const env = {
     url: environment.KEYCLOAK_URL,
     realm: environment.KEYCLOAK_REALM,
     clientId: environment.KEYCLOAK_CLIENT
   };
 
-  return () => kc.init(env, { onLoad: 'login-required' });
+  keycloak.urlsToIgnore = ['my.url.com', 'another.url.com.uk'];
+  return () => keycloak.init(env, { onLoad: 'login-required' });
 }

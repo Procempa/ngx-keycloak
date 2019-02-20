@@ -2,7 +2,7 @@ import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 import { KeycloakService } from '../services/keycloak.service';
 
 @Directive({
-  selector: '[kc-role]'
+  selector: '[keycloakRole]'
 })
 export class KeycloakRoleDirective {
 
@@ -12,11 +12,13 @@ export class KeycloakRoleDirective {
     private viewContainer: ViewContainerRef,
     private keycloakService: KeycloakService) { }
 
-  @Input()
-  set kcKeycloakRole(role: string) {
+  @Input('keycloakRole')
+  set kcKeycloakRole(role: string | string[]) {
 
     if (this.keycloakService.hasRole && typeof this.keycloakService.hasRole === 'function') {
-      const hasRole = this.keycloakService.hasRole(role);
+      let roles: string[];
+      Array.isArray(role) ? roles = role : roles = [role];
+      const hasRole = roles.some(role => this.keycloakService.hasRole(role));
 
       if (!hasRole && this.hasView) {
         this.viewContainer.clear();

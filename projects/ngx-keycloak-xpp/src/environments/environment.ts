@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  KEYCLOAK_URL: 'https://sso-16-des.procempa.com.br/auth',
-  KEYCLOAK_REALM: 'urbanismo',
-  KEYCLOAK_CLIENT: 'etpelevadores',
+  KEYCLOAK_URL: 'https://sso.keycloak.com.br/auth',
+  KEYCLOAK_REALM: 'realmname',
+  KEYCLOAK_CLIENT: 'clientname',
 };
 
 /*
