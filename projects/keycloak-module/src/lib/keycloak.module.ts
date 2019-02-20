@@ -18,22 +18,18 @@ import { KeycloakHttpInterceptor } from './interceptors/KeycloakHttpInterceptor'
     KeycloakRoleDirective
   ]
 })
-export class KeycloakModule {
+export class NgxKeycloakModule {
 
-  static forRoot(provide?: { interceptor?: (keycloakService: KeycloakService) => HttpInterceptor }): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders {
 
     return {
-      ngModule: KeycloakModule,
+      ngModule: NgxKeycloakModule,
       providers: [
         KeycloakService,
         KeycloakAuthGuard,
-        { provide: HTTP_INTERCEPTORS, multi: true, useFactory: provide['interceptor'] || kcInterceptorFactory, deps: [KeycloakService] }
+        { provide: HTTP_INTERCEPTORS, multi: true, useClass: KeycloakHttpInterceptor, deps: [KeycloakService] }
       ]
     };
 
   }
-}
-
-export function kcInterceptorFactory(ks: KeycloakService): HttpInterceptor {
-  return new KeycloakHttpInterceptor(ks);
 }

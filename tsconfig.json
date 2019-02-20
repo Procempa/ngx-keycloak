@@ -19,11 +19,11 @@
       "dom"
     ],
     "paths": {
-      "keycloak-module": [
-        "dist/ngx-module"
+      "ngx-keycloak": [
+        "dist/ngx-keycloak"
       ],
-      "keycloak-module/*": [
-        "dist/ngx-module/*"
+      "ngx-keycloak/*": [
+        "dist/ngx-keycloak/*"
       ]
     }
   }

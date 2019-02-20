@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as Keycloak_ from 'keycloak-js';
-export const Keycloak = Keycloak_;
-
+import * as Keycloak from 'keycloak-js';
 import { Observable, Subscriber } from 'rxjs';
 import { map } from "rxjs/operators";
 import { User } from "../models/authuser";
@@ -16,17 +14,26 @@ interface InitEnvironment {
 @Injectable()
 export class KeycloakService {
 
-  // static keycloakAuth: Keycloak.KeycloakInstance = undefined;
-  private keycloakAuth: Keycloak.KeycloakInstance;
+  private _keycloakInstance: Keycloak.KeycloakInstance;
 
   constructor() {
+  }
+
+  private _urlsToIgnore: any[];
+
+  set urlsToIgnore(value: string[] | RegExp[]) {
+    this._urlsToIgnore = value;
+  }
+
+  get urlsToIgnore(): string[] | RegExp[] {
+    return this._urlsToIgnore;
   }
 
   init(environment: InitEnvironment | string = {}, options?: Keycloak.KeycloakInitOptions) {
 
     return new Promise((resolve, reject) => {
-      this.keycloakAuth = Keycloak(environment);
-      this.keycloakAuth.init(options)
+      this._keycloakInstance = new Keycloak(environment);
+      this._keycloakInstance.init(options)
         .success(authenticated => {
           resolve(authenticated);
         })
@@ -37,35 +44,20 @@ export class KeycloakService {
     });
   }
 
-  // static init(environment?: { KEYCLOAK_URL: string, KEYCLOAK_REALM: string, KEYCLOAK_CLIENT: string }, options?: Keycloak.KeycloakInitOptions): Promise<any> {
-  //   return new Promise((resolve, reject) => {
-  //     this.keycloakAuth = Keycloak({ url: environment.KEYCLOAK_URL, realm: environment.KEYCLOAK_REALM, clientId: environment.KEYCLOAK_CLIENT });
-
-  //     this.keycloakAuth.init(options)
-  //       .success(() => {
-  //         resolve();
-  //       })
-  //       .error((errorData: any) => {
-  //         console.error('KeycloakService - Error initializing Keycloak', errorData);
-  //         reject(errorData);
-  //       });
-  //   });
-  // }
-
   authenticated(): boolean {
-    return this.keycloakAuth.authenticated;
+    return this._keycloakInstance.authenticated;
   }
 
   hasRole(roleName: string): boolean {
-    return this.keycloakAuth.hasResourceRole(roleName);
+    return this._keycloakInstance.hasResourceRole(roleName);
   }
 
   login(options?: Keycloak.KeycloakLoginOptions) {
-    this.keycloakAuth.login(options);
+    this._keycloakInstance.login(options);
   }
 
   logout() {
-    this.keycloakAuth.logout();
+    this._keycloakInstance.logout();
   }
 
   getToken() {
@@ -74,7 +66,7 @@ export class KeycloakService {
 
   getUser() {
     return new Observable((obs: Subscriber<User>) => {
-      this.keycloakAuth
+      this._keycloakInstance
         .loadUserProfile()
         .success(profile => {
           obs.next({
@@ -91,17 +83,21 @@ export class KeycloakService {
     });
   }
 
+  getKeycloakInstance() {
+    return this._keycloakInstance;
+  }
+
   private getRefreshedData() {
     return new Observable((obs: Subscriber<Keycloak.KeycloakInstance>) => {
-      if (this.keycloakAuth && this.keycloakAuth.token) {
-        this.keycloakAuth
+      if (this._keycloakInstance && this._keycloakInstance.token) {
+        this._keycloakInstance
           .updateToken(5)
           .success(refreshed => {
-            obs.next(this.keycloakAuth);
+            obs.next(this._keycloakInstance);
             obs.complete();
           })
           .error((error) => {
-            this.keycloakAuth.clearToken();
+            this._keycloakInstance.clearToken();
             obs.error(`KeycloakService - Unable to update access token ${error}`);
           });
       } else {

@@ -4277,10 +4277,10 @@ karma@~3.1.1:
     tmp "0.0.33"
     useragent "2.3.0"
 
-keycloak-js@3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/keycloak-js/-/keycloak-js-3.2.1.tgz#d0246328b662f28e6b869b0799f5584118696543"
-  integrity sha1-0CRjKLZi8o5rhpsHmfVYQRhpZUM=
+keycloak-js@1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/keycloak-js/-/keycloak-js-1.6.0.tgz#9ed376fcd94865c423da82b4b1df789f41605cb3"
+  integrity sha1-ntN2/NlIZcQj2oK0sd94n0FgXLM=
 
 killable@^1.0.0:
   version "1.0.1"
