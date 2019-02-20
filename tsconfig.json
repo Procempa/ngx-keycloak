@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "keycloak-module": [
+        "dist/ngx-module"
+      ],
+      "keycloak-module/*": [
+        "dist/ngx-module/*"
+      ]
+    }
   }
 }
