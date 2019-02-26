@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { KeycloakService, NgxKeycloakModule } from 'ngx-keycloak';
+import { KeycloakService, NgxKeycloakModule } from '@procempa/ngx-keycloak';
 import { environment } from '../environments/environment';
 
 @NgModule({

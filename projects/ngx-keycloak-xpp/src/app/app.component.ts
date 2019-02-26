@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { KeycloakService } from 'ngx-keycloak';
+import { KeycloakService } from '@procempa/ngx-keycloak';
 
 @Component({
   selector: 'app-root',

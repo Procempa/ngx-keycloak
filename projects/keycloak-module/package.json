@@ -1,8 +1,36 @@
 {
-  "name": "ngx-keycloak",
+  "name": "@procempa/ngx-keycloak",
+  "description": "Keycloak module for Angular with Guard, Interceptor, Observable Service and Directive to filter content based on user's roles",
   "version": "1.0.0",
   "peerDependencies": {
-    "@angular/common": "^7.1.0",
-    "@angular/core": "^7.1.0"
+    "@angular/common": "^6.0.0 || ^7.0.0",
+    "@angular/core": "^6.0.0 || ^7.0.0",
+    "rxjs": "^6.0.0"
+  },
+  "keywords": [
+    "angular",
+    "keycloak",
+    "ngx",
+    "procempa",
+    "angular module"
+  ],
+  "author": {
+    "name": "Márcio L. S. Arrosi",
+    "url": "https://github.com/marcioluis"
+  },
+  "contributors": [
+    {
+      "name": "Procempa",
+      "url": "https://github.com/Procempa"
+    }
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "homepage": "",
+  "bugs": {
+    "url": ""
   }
 }
