@@ -34,7 +34,7 @@ export class AppModule { }
 ## Initialization
 You must create a _function_ to use as a factory to initialize the keycloak with the application on the _providers_ array.
 
-### exemple
+### example
 
 AppModule:
 
@@ -77,7 +77,7 @@ To ignore some URLs create an array with the addresses as a _string_ or _Regex_ 
 
 Another way to ignore the interceptor is to add *IGNORE_INTERCEPTOR* to header for the request.
 
-### exemple
+### example
 
 ``` typescript
 export function initKeycloak(keycloak: KeycloakService) {
@@ -96,7 +96,7 @@ export function initKeycloak(keycloak: KeycloakService) {
 
 The routes guard can accept an array of _roles_ to protect it from navigation.
 
-### exemple
+### example
 
 ``` typescript
 import { KeycloakAuthGuard } from '../keycloak/guards/auth.guard';
