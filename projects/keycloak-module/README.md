@@ -137,7 +137,7 @@ export class MyRoutingModule { }
 
 The directive verify if the user has the roles for the current client and remove or insert at _DOM_ the elements.
 
-### exemple
+### example
 
 ``` html
 <nav class="navbar navbar-default">
