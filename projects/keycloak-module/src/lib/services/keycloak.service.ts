@@ -4,17 +4,10 @@ import { Observable, Subscriber } from 'rxjs';
 import { map } from "rxjs/operators";
 import { AuthUser } from "../models/authuser";
 
-interface InitEnvironment {
-  url?: string;
-  realm?: string;
-  clientId?: string;
-}
-
-
 @Injectable()
 export class KeycloakService {
 
-  private _keycloakInstance: Keycloak.KeycloakInstance;
+  private _keycloakInstance: Keycloak;
 
   constructor() {
   }
@@ -29,7 +22,7 @@ export class KeycloakService {
     return this._urlsToIgnore;
   }
 
-  init(environment: InitEnvironment | string = {}, options?: Keycloak.KeycloakInitOptions) {
+  init(environment: { [key: string]: any } | string = {}, options?: any) {
 
     return new Promise((resolve, reject) => {
       this._keycloakInstance = new Keycloak(environment);
@@ -52,7 +45,7 @@ export class KeycloakService {
     return this._keycloakInstance.hasResourceRole(roleName);
   }
 
-  login(options?: Keycloak.KeycloakLoginOptions) {
+  login(options?: any) {
     this._keycloakInstance.login(options);
   }
 
@@ -89,10 +82,10 @@ export class KeycloakService {
   }
 
   private getRefreshedData() {
-    return new Observable((obs: Subscriber<Keycloak.KeycloakInstance>) => {
+    return new Observable((obs: Subscriber<Keycloak>) => {
       if (this._keycloakInstance && this._keycloakInstance.token) {
         this._keycloakInstance
-          .updateToken(5)
+          .updateToken(60)
           .success(refreshed => {
             obs.next(this._keycloakInstance);
             obs.complete();
