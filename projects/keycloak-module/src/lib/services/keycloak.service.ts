@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as Keycloak from 'keycloak-js';
 import { Observable, Subscriber } from 'rxjs';
 import { map } from "rxjs/operators";
-import { User } from "../models/authuser";
+import { AuthUser } from "../models/authuser";
 
 interface InitEnvironment {
   url?: string;
@@ -65,7 +65,7 @@ export class KeycloakService {
   }
 
   getUser() {
-    return new Observable((obs: Subscriber<User>) => {
+    return new Observable((obs: Subscriber<AuthUser>) => {
       this._keycloakInstance
         .loadUserProfile()
         .success(profile => {
@@ -75,7 +75,8 @@ export class KeycloakService {
             username: profile.username,
             surname: profile.lastName,
             fullName: `${profile.firstName} ${profile.lastName}`,
-            attributes: profile['attributes']
+            attributes: profile['attributes'],
+            enabled: profile.enabled
           });
           obs.complete();
         })
