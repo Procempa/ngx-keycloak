@@ -10,7 +10,6 @@ interface InitEnvironment {
   clientId?: string;
 }
 
-
 @Injectable()
 export class KeycloakService {
 
@@ -32,7 +31,8 @@ export class KeycloakService {
   init(environment: InitEnvironment | string = {}, options?: Keycloak.KeycloakInitOptions) {
 
     return new Promise((resolve, reject) => {
-      this._keycloakInstance = new Keycloak(environment);
+      const fnKeycloak = Keycloak;
+      this._keycloakInstance = fnKeycloak(environment);
       this._keycloakInstance.init(options)
         .success(authenticated => {
           resolve(authenticated);
@@ -75,8 +75,7 @@ export class KeycloakService {
             username: profile.username,
             surname: profile.lastName,
             fullName: `${profile.firstName} ${profile.lastName}`,
-            attributes: profile['attributes'],
-            enabled: profile.enabled
+            attributes: profile['attributes']
           });
           obs.complete();
         })

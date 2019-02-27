@@ -1,5 +1,12 @@
 # Keycloak Module AngularX
 
+## Package and Keycloak Versions
+
+Package Version | Keycloak Version
+-|-
+ 1.0.0 | ~1.6.0 
+ 2.0.0 | ^3.0.0 --> ^4.0.0
+
 ## Instalation
 
 ```
