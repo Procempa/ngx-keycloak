@@ -5,7 +5,8 @@
     "build-lib": "ng build ngx-keycloak",
     "prepack": "npm run build-lib",
     "pack": "cd dist/ngx-keycloak && npm pack",
-    "postpack": "cd ../../"
+    "postpack": "cd ../../",
+    "start": "npm run build-lib && ng serve"
   },
   "private": true,
   "dependencies": {
