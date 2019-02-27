@@ -2,11 +2,12 @@
   "name": "keycloak-module-app",
   "version": "0.0.0",
   "scripts": {
+    "start": "npm run build-lib && ng serve",
     "build-lib": "ng build ngx-keycloak",
-    "prepack": "npm run build-lib",
-    "pack": "cd dist/ngx-keycloak && npm pack",
-    "postpack": "cd ../../",
-    "start": "npm run build-lib && ng serve"
+    "pack": "npm run build-lib && cd dist/ngx-keycloak && npm pack",
+    "patch-version": "cd projects/keycloak-module && npm version patch",
+    "minor-version": "cd projects/keycloak-module && npm version minor",
+    "major-version": "cd projects/keycloak-module && npm version major"
   },
   "private": true,
   "dependencies": {
