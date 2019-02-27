@@ -4,12 +4,6 @@ import { Observable, Subscriber } from 'rxjs';
 import { map } from "rxjs/operators";
 import { AuthUser } from "../models/authuser";
 
-interface InitEnvironment {
-  url?: string;
-  realm?: string;
-  clientId?: string;
-}
-
 @Injectable()
 export class KeycloakService {
 
@@ -28,7 +22,7 @@ export class KeycloakService {
     return this._urlsToIgnore;
   }
 
-  init(environment: InitEnvironment | string = {}, options?: Keycloak.KeycloakInitOptions) {
+  init(environment: { [key: string]: any } | string = {}, options?: Keycloak.KeycloakInitOptions) {
 
     return new Promise((resolve, reject) => {
       const fnKeycloak = Keycloak;
