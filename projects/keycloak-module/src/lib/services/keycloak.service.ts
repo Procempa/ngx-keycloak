@@ -78,7 +78,7 @@ export class KeycloakService {
 	 * it expires.
    * @param minValidity seconds to test
    */
-  isExpired(minValidity: number) {
+  isExpired(minValidity?: number) {
     const time = minValidity;
     return this._keycloakInstance.isTokenExpired(time);
   }
@@ -114,7 +114,7 @@ export class KeycloakService {
    * logout the user
    * @param redirectUri uri to redirect after logout
    */
-  logout(redirectUri: string) {
+  logout(redirectUri?: string) {
     const opts = redirectUri ? { redirectUri } : undefined;
     this._keycloakInstance.logout(opts);
   }
