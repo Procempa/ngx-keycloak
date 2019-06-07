@@ -1,11 +1,11 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpInterceptor } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 ///
 import { KeycloakRoleDirective } from './directives/keycloak-role.directive';
-import { KeycloakService } from './services/keycloak.service';
 import { KeycloakAuthGuard } from './guards/auth.guard';
 import { KeycloakHttpInterceptor } from './interceptors/KeycloakHttpInterceptor';
+import { KeycloakService } from './services/keycloak.service';
 
 @NgModule({
   imports: [
