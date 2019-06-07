@@ -1,19 +1,47 @@
 import { Injectable } from '@angular/core';
 import * as Keycloak from 'keycloak-js';
-import { Observable, Subscriber } from 'rxjs';
-import { map } from "rxjs/operators";
+import { Observable, Subscriber, Subject } from 'rxjs';
+import { map, switchMap, tap } from "rxjs/operators";
 import { AuthUser } from "../models/authuser";
+import { runInThisContext } from 'vm';
 
 @Injectable()
 export class KeycloakService {
 
+  constructor() { }
+
+  /** the keycloak instance */
   private _keycloakInstance: Keycloak.KeycloakInstance;
-
-  constructor() {
-  }
-
   private _urlsToIgnore: any[];
 
+  /** minimum token validity in seconds to test */
+  minValidity = 5;
+  /**
+   * Emits the new token on refresh success
+   */
+  onAuthRefresh = new Subject<string>();
+  /**
+   * Emits on refresh error
+   */
+  onAuthRefreshError = new Subject<string>();
+  /**
+   * Emits when token has expired with the expiration date
+   */
+  onTokenExpired = new Subject<Date>();
+  /**
+   * Emits when the adapter is initialized and true if the user is authenticated
+   */
+  onReady = new Subject<boolean>();
+  /**
+   * Emits when the user is successfully authenticated with the user profile
+   */
+  onAuthSuccess = new Subject<AuthUser>();
+  /**
+   * Emits when there was an error during authentication with the possible reason if any
+   */
+  onAuthError = new Subject<string>();
+
+  /** Urls to not send the token on the interceptor */
   set urlsToIgnore(value: string[] | RegExp[]) {
     this._urlsToIgnore = value;
   }
@@ -22,11 +50,19 @@ export class KeycloakService {
     return this._urlsToIgnore;
   }
 
+  /**
+   * initialize the keycloak adapter
+   * @param environment path to JSON config file or object with keycloak configuration
+   * @param options Keycloak Init options object
+   */
   init(environment: { [key: string]: any } | string = {}, options?: Keycloak.KeycloakInitOptions) {
 
     return new Promise((resolve, reject) => {
       const fnKeycloak = Keycloak;
       this._keycloakInstance = fnKeycloak(environment);
+
+      this.bindEvents();
+
       this._keycloakInstance.init(options)
         .success(authenticated => {
           resolve(authenticated);
@@ -38,26 +74,62 @@ export class KeycloakService {
     });
   }
 
+  /**
+   * Returns true if the token has less than `minValidity` seconds left before
+	 * it expires.
+   * @param minValidity seconds to test
+   */
+  isExpired(minValidity: number) {
+    const time = minValidity;
+    return this._keycloakInstance.isTokenExpired(time);
+  }
+
+  /** true if the user is authenticated */
   authenticated(): boolean {
     return this._keycloakInstance.authenticated;
   }
 
-  hasRole(roleName: string): boolean {
-    return this._keycloakInstance.hasResourceRole(roleName);
+  /**
+   * test if the current user has the role for the resource
+   *
+   * @param roleName role
+   * @param resource If not specified, `clientId` is used.
+   * */
+  hasRole(roleName: string, resource?: string): boolean {
+    return this._keycloakInstance.hasResourceRole(roleName, resource);
   }
 
-  login(options?: Keycloak.KeycloakLoginOptions) {
+  /**
+   * Redirects to login form
+   * @param options a URI string to redirect after login or Keycloak login options object
+   */
+  login(options?: Keycloak.KeycloakLoginOptions | string) {
+    if (options && typeof options === 'string') {
+      options = { redirectUri: options };
+    }
+    //@ts-ignore
     this._keycloakInstance.login(options);
   }
 
-  logout() {
-    this._keycloakInstance.logout();
+  /**
+   * logout the user
+   * @param redirectUri uri to redirect after logout
+   */
+  logout(redirectUri: string) {
+    const opts = redirectUri ? { redirectUri } : undefined;
+    this._keycloakInstance.logout(opts);
   }
 
+  /**
+   * get the current refreshed access token
+   */
   getToken() {
     return this.getRefreshedData().pipe(map(ki => ki.token));
   }
 
+  /**
+   * get the user profile
+   */
   getUser() {
     return new Observable((obs: Subscriber<AuthUser>) => {
       this._keycloakInstance
@@ -77,6 +149,17 @@ export class KeycloakService {
     });
   }
 
+  /**
+   * get this token expiration date
+   */
+  getExpirationDate() {
+    const expiresIn = (this._keycloakInstance.tokenParsed['exp'] + this._keycloakInstance.timeSkew) * 1000;
+    return new Date(expiresIn);
+  }
+
+  /**
+   * get the full Keycloak instance
+   */
   getKeycloakInstance() {
     return this._keycloakInstance;
   }
@@ -85,7 +168,7 @@ export class KeycloakService {
     return new Observable((obs: Subscriber<Keycloak.KeycloakInstance>) => {
       if (this._keycloakInstance && this._keycloakInstance.token) {
         this._keycloakInstance
-          .updateToken(5)
+          .updateToken(this.minValidity)
           .success(refreshed => {
             obs.next(this._keycloakInstance);
             obs.complete();
@@ -100,4 +183,17 @@ export class KeycloakService {
     });
   }
 
+  private bindEvents() {
+    if (!this._keycloakInstance) return;
+
+    this._keycloakInstance.onAuthRefreshSuccess = () => this.onAuthRefresh.next(this._keycloakInstance.token)
+    this._keycloakInstance.onAuthRefreshError = () => this.onAuthRefreshError.next('An error has occurred while trying to refresh token')
+    this._keycloakInstance.onTokenExpired = () => {
+      const expiresIn = (this._keycloakInstance.tokenParsed['exp'] + this._keycloakInstance.timeSkew) * 1000;
+      this.onTokenExpired.next(new Date(expiresIn));
+    }
+    this._keycloakInstance.onReady = (auth) => this.onReady.next(auth);
+    this._keycloakInstance.onAuthSuccess = () => this.getUser().pipe(tap(user => this.onAuthSuccess.next(user)));
+    this._keycloakInstance.onAuthError = e => this.onAuthError.next(JSON.stringify(e));
+  }
 }
