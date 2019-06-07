@@ -14,7 +14,8 @@ export class KeycloakAuthGuard implements CanActivate, CanActivateChild, CanLoad
    * @param state
    */
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    return this.checkLogin(next.data);
+    const url = `${location.origin}${state.url}`;
+    return this.checkLogin(url, next.data);
   }
 
   /**
@@ -23,7 +24,7 @@ export class KeycloakAuthGuard implements CanActivate, CanActivateChild, CanLoad
    * @param state
    */
   canActivateChild(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    return this.checkLogin(next.data);
+    return this.canActivate(next, state);
   }
 
   /**
@@ -31,10 +32,11 @@ export class KeycloakAuthGuard implements CanActivate, CanActivateChild, CanLoad
    * @param route
    */
   canLoad(route: Route): Observable<boolean> | Promise<boolean> | boolean {
-    return this.checkLogin(route.data);
+    const url = `${location.origin}/${route.path}`;
+    return this.checkLogin(url, route.data);
   }
 
-  private checkLogin(extras?: { roles?: string[] }): Observable<boolean> | Promise<boolean> | boolean {
+  private checkLogin(attemptedUrl: string, extras?: { roles?: string[] }): Observable<boolean> | Promise<boolean> | boolean {
     if (this.keycloakService.authenticated()) {
       if (extras && extras.roles) {
         let roles: string[];
@@ -46,7 +48,7 @@ export class KeycloakAuthGuard implements CanActivate, CanActivateChild, CanLoad
       }
     }
     else {
-      this.keycloakService.login();
+      this.keycloakService.login(attemptedUrl);
     }
   }
 }
