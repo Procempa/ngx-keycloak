@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as Keycloak from 'keycloak-js';
-import { Observable, Subscriber, Subject } from 'rxjs';
-import { map, switchMap, tap } from "rxjs/operators";
+import { Observable, Subject, Subscriber } from 'rxjs';
+import { map, tap } from "rxjs/operators";
 import { AuthUser } from "../models/authuser";
-import { runInThisContext } from 'vm';
 
 @Injectable()
 export class KeycloakService {
