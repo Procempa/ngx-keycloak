@@ -4,7 +4,7 @@ import { Observable, Subject, Subscriber } from 'rxjs';
 import { map, tap } from "rxjs/operators";
 import { AuthUser } from "../models/authuser";
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class KeycloakService {
 
   constructor() { }

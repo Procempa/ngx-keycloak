@@ -6,27 +6,47 @@ import { KeycloakService } from '../services/keycloak.service';
 })
 export class KeycloakRoleDirective {
 
-  private hasView = false;
+  private isShowing = false;
 
   constructor(private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
     private keycloakService: KeycloakService) { }
 
   @Input('keycloakRole')
-  set kcKeycloakRole(role: string | string[]) {
+  set kcKeycloakRole(role: string | string[] | { [prop: string]: string[] }) {
 
     if (this.keycloakService.hasRole && typeof this.keycloakService.hasRole === 'function') {
-      let roles: string[];
-      Array.isArray(role) ? roles = role : roles = [role];
-      const hasRole = roles.some(role => this.keycloakService.hasRole(role));
+      if (role == null) this.showOrNot(false);
 
-      if (!hasRole && this.hasView) {
-        this.viewContainer.clear();
-        this.hasView = false;
-      } else if (hasRole && !this.hasView) {
-        this.viewContainer.createEmbeddedView(this.templateRef);
-        this.hasView = true;
+      if (Array.isArray(role)) {
+        const hasRole = role.some(role => this.keycloakService.hasRole(role));
+        this.showOrNot(hasRole);
+
+      } else if (typeof role === 'string') {
+        const hasRole = this.keycloakService.hasRole(role);
+        this.showOrNot(hasRole);
+
+      } else {
+        let hasRole = false;
+        const keys = Object.keys(role);
+        for (const key of keys) {
+          const roles = role[key];
+          hasRole = roles.some(role => this.keycloakService.hasRole(role, key));
+          if (hasRole) break;
+        }
+        this.showOrNot(hasRole);
       }
+
+    }
+  }
+
+  private showOrNot(show: boolean) {
+    if (!show && this.isShowing) {
+      this.viewContainer.clear();
+      this.isShowing = false;
+    } else if (show && !this.isShowing) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+      this.isShowing = true;
     }
   }
 

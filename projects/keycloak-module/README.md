@@ -5,7 +5,7 @@
 Package Version | Keycloak Version | Branch
 -|-|-
  1.0.x | ~1.6.0 | kc-1.6.0
- 2.x.x | ^3.0.0 --> ^4.0.0 | master
+ 2.x.x | ^3.0.0 --> ^6.0.0 | master
 
 ## Instalation
 
@@ -133,9 +133,14 @@ const routes: Routes = [
 })
 export class MyRoutingModule { }
 ```
+
+### BaseKeycloakGuard 
+
+This class can be extended to customize the validation logic. Just implement the method `isAllowed`
+
 ## Directive
 
-The directive verify if the user has the roles for the current client and remove or insert at _DOM_ the elements.
+The directive verify if the user has the roles for the specified client ou current client and remove or insert at _DOM_ the elements.
 
 ### example
 
@@ -149,6 +154,8 @@ The directive verify if the user has the roles for the current client and remove
       <li routerLinkActive="active" *keycloakRole="'admin'" ><a routerLink="./empresa">Empresa</a></li>
       <!-- only rendered for a user with the EMPLOYEE or ADMIN roles -->
       <li routerLinkActive="active" *keycloakRole="['employee', 'admin']"><a routerLink="./upload">Upload</a></li>
+      <!-- only rendered for a user with the ADMIN role IN myapp client -->
+      <li routerLinkActive="active" *keycloakRole="{myapp: ['admin']}"><a routerLink="./upload">Upload</a></li>
     </ul>
   </div>
 </nav>
