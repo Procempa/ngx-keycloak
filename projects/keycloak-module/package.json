@@ -3,9 +3,9 @@
   "description": "Keycloak module for Angular with Guard, Interceptor, Observable Service and Directive to filter content based on user's roles",
   "version": "2.2.0",
   "peerDependencies": {
-    "@angular/common": "^6.0.0 || ^7.0.0",
-    "@angular/core": "^6.0.0 || ^7.0.0",
-    "rxjs": "^6.0.0"
+    "@angular/common": ">4.0.0",
+    "@angular/core": ">4.0.0",
+    "rxjs": ">=6.0.0"
   },
   "keywords": [
     "angular",

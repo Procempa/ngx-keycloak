@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { KeycloakService } from '../services/keycloak.service';
-import { BaseKeycloakGuard, GuardParams } from './kc.auth.guard';
+import { BaseKeycloakGuard } from './kc.auth.guard';
+import { GuardParams } from "../models/GuardParams";
 
 @Injectable({ providedIn: 'root' })
 export class KeycloakAuthGuard extends BaseKeycloakGuard {

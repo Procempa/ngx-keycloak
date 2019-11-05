@@ -3,6 +3,7 @@ import * as Keycloak from 'keycloak-js';
 import { Observable, Subject, Subscriber } from 'rxjs';
 import { map, tap } from "rxjs/operators";
 import { AuthUser } from "../models/authuser";
+import { NgxKeycloakEvents } from '../models/NgxKeycloakEvents';
 
 @Injectable({ providedIn: 'root' })
 export class KeycloakService {
@@ -131,6 +132,7 @@ export class KeycloakService {
    */
   getUser() {
     return new Observable((obs: Subscriber<AuthUser>) => {
+      const roles = this._keycloakInstance.resourceAccess;
       this._keycloakInstance
         .loadUserProfile()
         .success(profile => {
@@ -140,7 +142,8 @@ export class KeycloakService {
             username: profile.username,
             surname: profile.lastName,
             fullName: `${profile.firstName} ${profile.lastName}`,
-            attributes: profile['attributes']
+            attributes: profile['attributes'],
+            roles
           });
           obs.complete();
         })
@@ -182,17 +185,30 @@ export class KeycloakService {
     });
   }
 
-  private bindEvents() {
+  /**
+   * Bind functions to keycloak events
+   * @param callbacks binds for keycloak events
+   */
+  bindEvents(callbacks?: NgxKeycloakEvents) {
     if (!this._keycloakInstance) return;
 
-    this._keycloakInstance.onAuthRefreshSuccess = () => this.onAuthRefresh.next(this._keycloakInstance.token)
-    this._keycloakInstance.onAuthRefreshError = () => this.onAuthRefreshError.next('An error has occurred while trying to refresh token')
-    this._keycloakInstance.onTokenExpired = () => {
-      const expiresIn = (this._keycloakInstance.tokenParsed['exp'] + this._keycloakInstance.timeSkew) * 1000;
-      this.onTokenExpired.next(new Date(expiresIn));
-    }
-    this._keycloakInstance.onReady = (auth) => this.onReady.next(auth);
-    this._keycloakInstance.onAuthSuccess = () => this.getUser().pipe(tap(user => this.onAuthSuccess.next(user)));
-    this._keycloakInstance.onAuthError = e => this.onAuthError.next(JSON.stringify(e));
+    const {
+      onAuthRefreshSuccess = () => this.onAuthRefresh.next(this._keycloakInstance.token),
+      onAuthRefreshError = () => this.onAuthRefreshError.next('An error has occurred while trying to refresh token'),
+      onTokenExpired = () => {
+        const expiresIn = (this._keycloakInstance.tokenParsed['exp'] + this._keycloakInstance.timeSkew) * 1000;
+        this.onTokenExpired.next(new Date(expiresIn));
+      },
+      onReady = (auth) => this.onReady.next(auth),
+      onAuthSuccess = () => this.getUser().pipe(tap(user => this.onAuthSuccess.next(user))),
+      onAuthError = e => this.onAuthError.next(JSON.stringify(e))
+    } = callbacks || {};
+
+    this._keycloakInstance.onAuthRefreshSuccess = onAuthRefreshSuccess;
+    this._keycloakInstance.onAuthRefreshError = onAuthRefreshError;
+    this._keycloakInstance.onTokenExpired = onTokenExpired;
+    this._keycloakInstance.onReady = onReady;
+    this._keycloakInstance.onAuthSuccess = onAuthSuccess;
+    this._keycloakInstance.onAuthError = onAuthError;
   }
 }

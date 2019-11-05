@@ -1,3 +1,5 @@
+import { KeycloakResourceAccess } from 'keycloak-js';
+
 export interface AuthUser {
   surname: string;
   name: string;
@@ -6,5 +8,6 @@ export interface AuthUser {
   username: string;
   attributes: {
     [key: string]: string[]
-  }
+  },
+  roles: KeycloakResourceAccess
 }

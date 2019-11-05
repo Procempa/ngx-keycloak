@@ -20,4 +20,8 @@ export class AppComponent {
   logout() {
     this.keycloak.logout();
   }
+
+  printSomething() {
+    this.keycloak.getToken().subscribe();
+  }
 }

@@ -20,6 +20,10 @@ import { KeycloakService } from './services/keycloak.service';
 })
 export class NgxKeycloakModule {
 
+  /**
+   * Module with services (Guard, Keycloak and Interceptor)
+   * to inject in root module
+   */
   static forRoot(): ModuleWithProviders {
 
     return {

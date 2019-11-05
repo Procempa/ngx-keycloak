@@ -27,6 +27,11 @@ export function initKeycloak(keycloak: KeycloakService) {
     clientId: environment.KEYCLOAK_CLIENT
   };
 
+  keycloak.onReady.subscribe(a => console.log('ready', a))
+  keycloak.onAuthRefresh.subscribe(t => console.log('refreshed token: ', t));
+  keycloak.onAuthSuccess.subscribe(u => console.log('auth success: ', u))
+  keycloak.minValidity = -1;
+
   keycloak.urlsToIgnore = ['my.url.com', 'another.url.com.uk'];
   return () => keycloak.init(env, { onLoad: 'login-required' });
 }

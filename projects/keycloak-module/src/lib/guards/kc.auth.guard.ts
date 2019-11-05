@@ -1,12 +1,7 @@
 import { ActivatedRouteSnapshot, Route, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { KeycloakService } from '../services/keycloak.service';
-
-export interface GuardParams {
-  isAuthenticated: boolean
-  urlAttempted: string
-  route: Route
-}
+import { GuardParams } from '../models/GuardParams';
 
 export abstract class BaseKeycloakGuard {
 
