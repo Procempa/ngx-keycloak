@@ -14,7 +14,7 @@ export abstract class BaseKeycloakGuard {
    */
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     const isAuthenticated = this.keycloakSrv.authenticated();
-    const urlAttempted = `${location.origin}${state.url}`;
+    const urlAttempted = `${location.origin}/${state.url}`;
     const params = { route: route.routeConfig, isAuthenticated, urlAttempted }
     return this.isAllowed(params);
   }
@@ -25,7 +25,7 @@ export abstract class BaseKeycloakGuard {
    */
   canLoad(route: Route): Observable<boolean> | Promise<boolean> | boolean {
     const isAuthenticated = this.keycloakSrv.authenticated();
-    const urlAttempted = `${location.origin}${route.path}`;
+    const urlAttempted = `${location.origin}/${route.path}`;
     const params = { route, isAuthenticated, urlAttempted }
     return this.isAllowed(params);
   }
@@ -36,7 +36,10 @@ export abstract class BaseKeycloakGuard {
    * @param state
    */
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    return this.canActivate(route, state);
+    const isAuthenticated = this.keycloakSrv.authenticated();
+    const urlAttempted = `${location.origin}/${state.url}`;
+    const params = { route: route.routeConfig, isAuthenticated, urlAttempted }
+    return this.isAllowed(params);
   }
 
   /**
