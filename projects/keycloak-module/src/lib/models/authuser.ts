@@ -8,13 +8,9 @@ export interface AuthUser {
   attributes: {
     [key: string]: string[]
   },
-  roles: KeycloakResourceAccess
-}
-
-export interface KeycloakResourceAccess {
-  [key: string]: KeycloakRoles
-}
-
-export interface KeycloakRoles {
-  roles: string[];
+  roles: {
+    [key: string]: {
+      roles: string[]
+    }
+  }
 }
