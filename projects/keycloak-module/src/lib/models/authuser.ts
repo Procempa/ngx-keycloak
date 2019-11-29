@@ -10,7 +10,7 @@ export interface AuthUser {
   },
   roles: {
     [key: string]: {
-      roles: []
+      roles: string[]
     }
   }
 }
