@@ -6,6 +6,7 @@ Package Version | Keycloak Version | Branch
 -|-|-
  1.0.x | ~1.6.0 | kc-1.6.0
  2.x.x | ^3.0.0 --> ^6.0.0 | master
+ 3.x.x | ^3.0.0 --> ^6.0.0 | master
 
 ## Instalation
 
