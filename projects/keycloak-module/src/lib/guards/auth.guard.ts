@@ -4,7 +4,7 @@ import { KeycloakService } from '../services/keycloak.service';
 import { BaseKeycloakGuard } from './kc.auth.guard';
 import { GuardParams } from "../models/GuardParams";
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class KeycloakAuthGuard extends BaseKeycloakGuard {
 
   constructor(private keycloakService: KeycloakService) {
