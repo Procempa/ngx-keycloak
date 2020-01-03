@@ -5,7 +5,7 @@ import { map, tap } from "rxjs/operators";
 import { AuthUser } from "../models/authuser";
 import { NgxKeycloakEvents } from '../models/NgxKeycloakEvents';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class KeycloakService {
 
   constructor() { }
