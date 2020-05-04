@@ -1,7 +1,7 @@
 {
   "name": "@procempa/ngx-keycloak",
   "description": "Keycloak module for Angular with Guard, Interceptor, Observable Service and Directive to filter content based on user's roles",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "peerDependencies": {
     "@angular/common": ">=7.1.0",
     "@angular/core": ">=7.1.0",
