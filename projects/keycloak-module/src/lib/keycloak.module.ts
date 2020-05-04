@@ -6,16 +6,19 @@ import { KeycloakRoleDirective } from './directives/keycloak-role.directive';
 import { KeycloakAuthGuard } from './guards/auth.guard';
 import { KeycloakHttpInterceptor } from './interceptors/KeycloakHttpInterceptor';
 import { KeycloakService } from './services/keycloak.service';
+import { KeycloakAuthenticatedDirective } from "./directives/authenticated.directive";
 
 @NgModule({
   imports: [
     CommonModule
   ],
   declarations: [
-    KeycloakRoleDirective
+    KeycloakRoleDirective,
+    KeycloakAuthenticatedDirective
   ],
   exports: [
-    KeycloakRoleDirective
+    KeycloakRoleDirective,
+    KeycloakAuthenticatedDirective
   ]
 })
 export class NgxKeycloakModule {
