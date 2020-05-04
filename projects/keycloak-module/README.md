@@ -139,7 +139,9 @@ export class MyRoutingModule { }
 
 This class can be extended to customize the validation logic. Just implement the method `isAllowed`
 
-## Directive
+## Directives
+
+### *keycloakRole
 
 The directive verify if the user has the roles for the specified client ou current client and remove or insert at _DOM_ the elements.
 
@@ -160,4 +162,20 @@ The directive verify if the user has the roles for the specified client ou curre
     </ul>
   </div>
 </nav>
+```
+
+### *keycloakAuthenticated
+
+This directive is quite useful if you use `onLoad` type of check-sso instead of `login-required`.
+
+You can also pass boolean parameter to directive to determine if it should be shown or hidden for authenticated users.
+
+``` html
+// Authenticated user
+<div *keycloakAuthenticated="true">Shows</div>
+<div *keycloakAuthenticated="false">Hides</div>
+
+// Unauthenticated user
+<div *keycloakAuthenticated="true">Hides</div>
+<div *keycloakAuthenticated="false">Shows</div>
 ```
